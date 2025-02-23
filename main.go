@@ -1,28 +1,20 @@
 package main
 
 import (
-	"bytes"
-	"crypto/sha256"
+	"fmt"
+
+	"github.com/dharmini98/golang-blockchain/blockchain"
 )
 
-type Block struct {
-	Hash []byte
-	Data []byte
-	Prev []byte
-}
-
-func (b *Block) DeriveHash() {
-	info := bytes.Join([][]byte{b.Data, b.Prev}, []byte{})
-	hash := sha256.Sum256(info) //insecure hashing function, but this will do for now
-	b.Hash = hash[:]
-}
-
-func CreateBlock(data string, prevHash []byte) *Block {
-	block := &Block{[]byte{}, []byte(data), prevHash}
-	block.DeriveHash()
-	return block
-}
-
 func main() {
+	blockchain := blockchain.InitBlockChain()
+	blockchain.AddBlock("This is the first data string")
+	blockchain.AddBlock("This is the second data string")
+	blockchain.AddBlock("This is the third data string")
 
+	for _, block := range blockchain.Blocks {
+		fmt.Printf("Previous Hash: %x\n", block.Prev)
+		fmt.Printf("Data in block: %s\n", block.Data)
+		fmt.Printf("Hash: %x\n", block.Hash)
+	}
 }
